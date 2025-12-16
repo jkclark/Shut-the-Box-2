@@ -28,14 +28,9 @@ class WinPercentStrategy(Strategy):
     def get_game_over_box_state_value(box_state: BoxState):
         return 1 if len(box_state.numbers) == 0 else 0
 
-    @staticmethod
-    def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
-        return super().pick_next_box_state_from_options(box_states)
-
-
 class WinPercentOptimalStrategy(WinPercentStrategy):
     def __str__(self):
-        return "Win % optimal strategy"
+        return "Strategy: win %: optimal"
 
     @staticmethod
     def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
@@ -48,7 +43,7 @@ class WinPercentOptimalStrategy(WinPercentStrategy):
 
 class WinPercentMostNumbersHighStrategy(WinPercentStrategy):
     def __str__(self):
-        return "Win % most numbers high strategy"
+        return "Strategy: win %: most numbers > high"
 
     @staticmethod
     def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
@@ -58,3 +53,49 @@ class WinPercentMostNumbersHighStrategy(WinPercentStrategy):
             key=lambda state: (len(state.numbers), max(state.numbers) if len(state.numbers) > 0 else 0)
         )
         return sorted_by_num_of_nums[0]
+
+class WinPercentMostNumbersLowStrategy(WinPercentStrategy):
+    def __str__(self):
+        return "Strategy: win %: most numbers > low"
+
+    @staticmethod
+    def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
+        """Pick the state that removes the most numbers, or the one that removes the lowest number if tied."""
+        sorted_by_num_of_nums = sorted(
+            box_states,
+            # When tied, we want to pick the box state that removed the lowest number
+            # The box state that removed the lowest number will have a higher min
+            # Since we sort in ASC order, we negate each min to put them in the right order.
+            key=lambda state: (len(state.numbers), -1 * min(state.numbers) if len(state.numbers) > 0 else 0)
+        )
+        return sorted_by_num_of_nums[0]
+
+class WinPercentHighestNumberStrategy(WinPercentStrategy):
+    def __str__(self):
+        return "Strategy: win %: highest number first"
+
+    @staticmethod
+    def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
+        """Pick the state that removes the highest number (next highest number if tied)."""
+        sorted_by_num_of_nums = sorted(
+            box_states,
+            key=lambda state: tuple(sorted(state.numbers, reverse=True))
+        )
+        return sorted_by_num_of_nums[-1]  # There should always be at least 1
+
+class ScoreStrategy(Strategy):
+    @staticmethod
+    def get_game_over_box_state_value(box_state: BoxState) -> int:
+        return sum(box_state.numbers)
+
+class ScoreOptimalStrategy(ScoreStrategy):
+    def __str__(self):
+        return "Strategy: score: optimal"
+
+    @staticmethod
+    def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
+        best_option = None
+        for box_state in box_states:
+            if not best_option or box_state.expectation < best_option.expectation:
+                best_option = box_state
+        return best_option
