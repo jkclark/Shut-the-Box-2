@@ -15,7 +15,7 @@ class Game():
     ) -> None:
         # NOTE: starting_box_state.numbers MUST be a list of consecutive
         #       positive integers starting at 1
-        self.starting_box_state = starting_box_state
+        self.max_box_number = len(starting_box_state.numbers)
         self.dice = dice
         self.strategy = strategy
 
@@ -28,9 +28,8 @@ class Game():
         self.all_box_states[closed_box_state.id] = closed_box_state
 
     def solve_all_box_states(self) -> None:
-        max_num_of_nums = len(self.starting_box_state.numbers)
-        for num_of_nums_in_box in range(1, max_num_of_nums + 1):
-            for combo in combinations(range(1, max_num_of_nums + 1), num_of_nums_in_box):
+        for num_of_nums_in_box in range(1, self.max_box_number + 1):
+            for combo in combinations(range(1, self.max_box_number + 1), num_of_nums_in_box):
                 box_state = BoxState(list(combo))
                 self.solve_box_state(box_state)
                 self.all_box_states[box_state.id] = box_state
@@ -42,21 +41,33 @@ class Game():
 
         box_value = 0
         for dice_sum, prob in self.dice.distribution.items():
-            # What are the possible box states we can get to from here?
+            # What are the possible box states (by ID) we can get to from here?
             possible_next_box_state_ids = self.get_ids_of_next_box_state_options_given_roll(box_state, dice_sum)
 
-            # If there are no possible next game states, consider this state as game over
+            # If there are no possible next box states, consider this state as game over
             if len(possible_next_box_state_ids) == 0:
+                # Get the value of this state being game over
                 next_game_state_expectation = self.strategy.get_game_over_box_state_value(box_state)
+
+                # Remember that for the current box state, this roll yields game over
+                box_state.rolls_to_next_box_states[dice_sum] = None
 
             # Choose the next box state according to the strategy
             else:
+                # Get the actual BoxState objects for the candidates
                 possible_next_box_states = [
                     self.all_box_states[possible_next_box_state_id]
                     for possible_next_box_state_id in possible_next_box_state_ids
                 ]
-                chosen_next_game_state = self.strategy.pick_next_box_state_from_options(possible_next_box_states)
-                next_game_state_expectation = chosen_next_game_state.expectation
+
+                # Choose the next box state
+                chosen_next_box_state = self.strategy.pick_next_box_state_from_options(possible_next_box_states)
+
+                # Remember that we chose this one for the current box state
+                box_state.rolls_to_next_box_states[dice_sum] = chosen_next_box_state
+
+                # Get the expectation of the next state
+                next_game_state_expectation = chosen_next_box_state.expectation
 
             # Multiply the value by the probability
             next_box_state_weighted_value = next_game_state_expectation* prob
@@ -67,7 +78,7 @@ class Game():
         box_state.expectation = box_value
 
     def get_ids_of_next_box_state_options_given_roll(self, box_state: BoxState, roll: int) -> Set[str]:
-        # If there is still roll to use and we have no numbers left, we've lost (not a valid game state)
+        # If there is still roll to use and we have no numbers left, we've lost (not a valid box state)
         if roll > 0 and len(box_state.numbers) == 0:
             return set()
 
@@ -93,3 +104,6 @@ class Game():
             next_box_state_option_ids = next_box_state_option_ids | all_next_box_states_minus_number
 
         return next_box_state_option_ids
+
+    def get_starting_box_state_id(self) -> str:
+        return ",".join([str(num) for num in range(1, self.max_box_number + 1)])

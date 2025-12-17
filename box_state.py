@@ -3,6 +3,7 @@ class BoxState():
         self.id = self.get_id(numbers)
         self.numbers = numbers
         self.expectation = None
+        self.rolls_to_next_box_states: dict[int, BoxState] = {}
 
     @staticmethod
     def get_id(numbers: list[int]) -> str:

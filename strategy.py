@@ -30,7 +30,7 @@ class WinPercentStrategy(Strategy):
 
 class WinPercentOptimalStrategy(WinPercentStrategy):
     def __str__(self):
-        return "Strategy: win %: optimal"
+        return "\"Win % - Optimal\" strategy"
 
     @staticmethod
     def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
@@ -43,7 +43,7 @@ class WinPercentOptimalStrategy(WinPercentStrategy):
 
 class WinPercentMostNumbersHighStrategy(WinPercentStrategy):
     def __str__(self):
-        return "Strategy: win %: most numbers > high"
+        return "\"Win % - most numbers, then high\" strategy"
 
     @staticmethod
     def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
@@ -56,7 +56,7 @@ class WinPercentMostNumbersHighStrategy(WinPercentStrategy):
 
 class WinPercentMostNumbersLowStrategy(WinPercentStrategy):
     def __str__(self):
-        return "Strategy: win %: most numbers > low"
+        return "\"Win % - most numbers, then low\" strategy"
 
     @staticmethod
     def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
@@ -72,7 +72,7 @@ class WinPercentMostNumbersLowStrategy(WinPercentStrategy):
 
 class WinPercentHighestNumberStrategy(WinPercentStrategy):
     def __str__(self):
-        return "Strategy: win %: highest number first"
+        return "\"Win % - highest number first\" strategy"
 
     @staticmethod
     def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
