@@ -34,11 +34,34 @@ class WinPercentOptimalStrategy(WinPercentStrategy):
 
     @staticmethod
     def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
+        # NOTE: This strategy does not discriminate between tied box states
+        # This can lead to different outcomes in different runs of the script.
         best_option = None
         for box_state in box_states:
             if not best_option or box_state.expectation > best_option.expectation:
                 best_option = box_state
         return best_option
+
+class WinPercentOptimalThenFewestStrategy(WinPercentStrategy):
+    """
+    In digging into the optimal strategy, it was clear that most of the time, it's more optimal
+    to remove the number = sum of the dice. There were some situations where the next box state
+    where the dice-sum number was removed was tied with another option. This strategy eliminates
+    those ties by taking the next box state with the most remaining numbers (thus the fewest removed),
+    which will always be the option with the dice-sum number, if present.
+    """
+    def __str__(self):
+        return "\"Win % - Optimal, then fewest numbers\" strategy"
+
+    @staticmethod
+    def pick_next_box_state_from_options(box_states: list[BoxState]) -> BoxState:
+        sorted_next_box_states_optimal_then_fewest = sorted(
+            box_states,
+            key=lambda state: (state.expectation, len(state.numbers)),
+            reverse=True,
+        )
+
+        return sorted_next_box_states_optimal_then_fewest[0]
 
 
 class WinPercentMostNumbersHighStrategy(WinPercentStrategy):
@@ -53,6 +76,7 @@ class WinPercentMostNumbersHighStrategy(WinPercentStrategy):
             key=lambda state: (len(state.numbers), max(state.numbers) if len(state.numbers) > 0 else 0)
         )
         return sorted_by_num_of_nums[0]
+
 
 class WinPercentMostNumbersLowStrategy(WinPercentStrategy):
     def __str__(self):
@@ -70,6 +94,7 @@ class WinPercentMostNumbersLowStrategy(WinPercentStrategy):
         )
         return sorted_by_num_of_nums[0]
 
+
 class WinPercentHighestNumberStrategy(WinPercentStrategy):
     def __str__(self):
         return "\"Win % - highest number first\" strategy"
@@ -83,10 +108,12 @@ class WinPercentHighestNumberStrategy(WinPercentStrategy):
         )
         return sorted_by_num_of_nums[-1]  # There should always be at least 1
 
+
 class ScoreStrategy(Strategy):
     @staticmethod
     def get_game_over_box_state_value(box_state: BoxState) -> int:
         return sum(box_state.numbers)
+
 
 class ScoreOptimalStrategy(ScoreStrategy):
     def __str__(self):

@@ -3,7 +3,7 @@ from box_state import BoxState
 from data_visualization import show_all_visualizations
 from dice import Dice
 from game import Game
-from strategy import ScoreOptimalStrategy, WinPercentHighestNumberStrategy, WinPercentMostNumbersHighStrategy, WinPercentMostNumbersLowStrategy, WinPercentOptimalStrategy
+from strategy import WinPercentOptimalThenFewestStrategy
 
 
 def main():
@@ -13,7 +13,7 @@ def main():
     #       positive integers starting at 1
     starting_game_state = BoxState([num for num in range(1, MAX_BOX_NUMBER + 1)])
     dice = Dice([6, 6])
-    strategy = WinPercentOptimalStrategy()
+    strategy = WinPercentOptimalThenFewestStrategy()
 
     game = Game(
         starting_game_state,
