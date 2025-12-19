@@ -17,7 +17,12 @@
 
 ### What number(s) to close?
 
-- When possible, what % of the time is it optimal to close the number you just rolled? Based on initial inspection it seems quite high.
-- When possible, what % of the time is it optimal NOT to?
-- Is there a way to tell? Is there some feature that the do's/do not's have in common?
-- How often will it not be possible?
+Total game states: 45,045:
+
+- game over: 10,845 (24.08%)
+- can close dice roll: 22,528 (50.01%) (e.g., you roll an 8 and 8 is still open in the box)
+- cannot close dice roll: (25.91%)
+
+It turns out that it is always equal or better to close the sum of the dice if possible WHEN YOU ARE TRYING TO MAX WIN %
+
+The above numbers equally weigh all game states, even though some are extremely unlikely to occur.
