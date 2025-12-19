@@ -1,9 +1,13 @@
+from decimal import Decimal
+
+
 class BoxState():
     def __init__(self, numbers: list[int]) -> None:
         self.id = self.get_id(numbers)
         self.numbers = numbers
         self.expectation = None
         self.rolls_to_next_box_states: dict[int, BoxState] = {}
+        self.probability = Decimal(0)
 
     @staticmethod
     def get_id(numbers: list[int]) -> str:

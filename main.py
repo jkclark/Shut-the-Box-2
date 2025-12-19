@@ -8,11 +8,11 @@ from strategy import WinPercentOptimalThenFewestStrategy
 
 def main():
     # Set up
-    MAX_BOX_NUMBER = 12
+    MAX_BOX_NUMBER = 3
     # NOTE: starting_box_state.numbers MUST be a list of consecutive
     #       positive integers starting at 1
     starting_game_state = BoxState([num for num in range(1, MAX_BOX_NUMBER + 1)])
-    dice = Dice([6, 6])
+    dice = Dice([3])
     strategy = WinPercentOptimalThenFewestStrategy()
 
     game = Game(
@@ -20,10 +20,10 @@ def main():
         dice,
         strategy
     )
-    game.solve_all_box_states()
+    game.solve()
 
     analyze(game)
-    # show_all_visualizations(game)
+    show_all_visualizations(game)
     print("")
 
 if __name__ == "__main__":

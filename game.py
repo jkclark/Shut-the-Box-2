@@ -27,6 +27,10 @@ class Game():
         self.all_box_states = {}
         self.all_box_states[closed_box_state.id] = closed_box_state
 
+    def solve(self) -> None:
+        self.solve_all_box_states()
+        self.get_all_box_state_probabilities()
+
     def solve_all_box_states(self) -> None:
         for num_of_nums_in_box in range(1, self.max_box_number + 1):
             for combo in combinations(range(1, self.max_box_number + 1), num_of_nums_in_box):
@@ -70,7 +74,7 @@ class Game():
                 next_game_state_expectation = chosen_next_box_state.expectation
 
             # Multiply the value by the probability
-            next_box_state_weighted_value = next_game_state_expectation* prob
+            next_box_state_weighted_value = next_game_state_expectation * prob
 
             # Add that value to box_value
             box_value += next_box_state_weighted_value
@@ -104,6 +108,21 @@ class Game():
             next_box_state_option_ids = next_box_state_option_ids | all_next_box_states_minus_number
 
         return next_box_state_option_ids
+
+    def get_all_box_state_probabilities(self):
+        # Set initial box state probability to 1
+        initial_box_state = self.all_box_states[self.get_starting_box_state_id()]
+        initial_box_state.probability = 1
+
+        # Iterate through all combinations of progressively "more closed" boxes
+        # and add their probabilities to their children
+        for num_of_nums_in_box in range(self.max_box_number, 0, -1):
+            for combo in combinations(range(1, self.max_box_number + 1), num_of_nums_in_box):
+                box_state = self.all_box_states[BoxState.get_id(combo)]
+                for dice_sum, next_box_state in box_state.rolls_to_next_box_states.items():
+                    if next_box_state is not None:
+                        next_state_prob = self.dice.distribution[dice_sum]
+                        next_box_state.probability += box_state.probability * next_state_prob
 
     def get_starting_box_state_id(self) -> str:
         return ",".join([str(num) for num in range(1, self.max_box_number + 1)])
