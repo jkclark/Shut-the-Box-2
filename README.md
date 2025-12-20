@@ -25,4 +25,23 @@ Total game states: 45,045:
 
 It turns out that it is always equal or better to close the sum of the dice if possible WHEN YOU ARE TRYING TO MAX WIN %
 
-The above numbers equally weigh all game states, even though some are extremely unlikely to occur.
+Actually, the guiding principle is more general than that: in all but **8** situations (out of 45,045), we choose to remove the *fewest* number of numbers.
+This moves us forward in the game while leaving us the most flexibility to deal with future rolls.
+
+Here are the 8 situations:
+- Chosen vs not chosen
+- [4, 7]     vs [1, 2, 8] -- gain of 0.0062 expectation
+- [4, 8]     vs [1, 2, 9] -- gain of 0.0062 expectation
+- [5, 6]     vs [1, 2, 8] -- gain of 0.0093 expectation
+- [5, 7]     vs [1, 2, 9] -- gain of 0.0201 expectation
+- [5, 7]     vs [1, 3, 8] -- gain of 0.0015 expectation
+- [1, 8, 11] vs [2, 3, 4, 11] -- gain of 0.0003 expectation
+- [4, 7, 12] vs [1, 2, 8, 12] -- gain of 0.0005 expectation
+- [5, 6, 12] vs [1, 2, 8, 12] -- gain of 0.0008 expectation
+
+As you can see, in these exceptional cases, we would be stuck with numbers on the extreme ends
+of the spectrum, and instead we choose to have fewer numbers to close, but which are more likely
+to be rolled.
+
+In the other 45,037 situations, we choose to remove the fewest number of numbers (although which set of that number of numbers is not necessarily clear yet). That is to say,
+it is correct to remove the fewest number of numbers in ~99.982% of game states.

@@ -61,6 +61,15 @@ class WinPercentOptimalThenFewestStrategy(WinPercentStrategy):
             reverse=True,
         )
 
+        num_of_nums_remaining = len(sorted_next_box_states_optimal_then_fewest[0].numbers)
+        for box_state in sorted_next_box_states_optimal_then_fewest[1:]:
+            if len(box_state.numbers) > num_of_nums_remaining:
+                print(f"Chosen: {sorted_next_box_states_optimal_then_fewest[0].numbers} -- {sorted_next_box_states_optimal_then_fewest[0].expectation:.4f}")
+                print(f"Not chosen: {box_state.numbers} -- {box_state.expectation:.4f}")
+                print(f"Difference in expectation: {sorted_next_box_states_optimal_then_fewest[0].expectation - box_state.expectation:.4f}")
+                print("-----")
+
+
         return sorted_next_box_states_optimal_then_fewest[0]
 
 

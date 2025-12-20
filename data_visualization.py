@@ -42,10 +42,12 @@ def show_avg_expectation_by_num_of_remaining_nums(solved_game: Game) -> None:
 
 def show_game_graph(game: Game) -> None:
     visual = []
+    edge_labels = {}
 
-    def addEdge(a, b):
+    def addEdge(a, b, label):
         temp = [a, b]
         visual.append(temp)
+        edge_labels[(a, b)] = str(label)
 
     def visualize():
         G = nx.Graph()
@@ -72,11 +74,12 @@ def show_game_graph(game: Game) -> None:
                 pos[node] = (i, l)
 
         nx.draw_networkx(G, pos=pos)
+        nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=edge_labels, font_color='red')
         plt.show()
 
     for box_state_id, box_state in game.all_box_states.items():
         for dice_sum, next_game_state in box_state.rolls_to_next_box_states.items():
             if next_game_state is not None:
-                addEdge(box_state_id, next_game_state.id)
+                addEdge(box_state_id, next_game_state.id, f"{box_state.probability * game.dice.distribution[dice_sum]:.2f}" )
 
     visualize()
