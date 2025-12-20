@@ -1,5 +1,11 @@
 # Shut the Box
 
+## TODO:
+- It is clear that we want to remove the fewest numbers possible, but which numbers should they be?
+- How do things change if our goal is lowest score, not win% ?
+- What is the difference in expectation between various strategies? Like, how much expectation do you lose
+if you play with a suboptimal strategy?
+
 ## Rules
 
 - When the box is fully "open": numbers 1-12
