@@ -1,10 +1,11 @@
 # Shut the Box
 
 ## TODO:
+
 - It is clear that we want to remove the fewest numbers possible, but which numbers should they be?
 - How do things change if our goal is lowest score, not win% ?
 - What is the difference in expectation between various strategies? Like, how much expectation do you lose
-if you play with a suboptimal strategy?
+  if you play with a suboptimal strategy?
 
 ## Rules
 
@@ -31,23 +32,27 @@ Total game states: 45,045:
 
 It turns out that it is always equal or better to close the sum of the dice if possible WHEN YOU ARE TRYING TO MAX WIN %
 
-Actually, the guiding principle is more general than that: in all but **8** situations (out of 45,045), we choose to remove the *fewest* number of numbers.
+Actually, the guiding principle is more general than that: in all but **8** situations (out of 45,045), we choose to remove the _fewest_ number of numbers.
 This moves us forward in the game while leaving us the most flexibility to deal with future rolls.
 
 Here are the 8 situations:
-- Chosen vs not chosen
-- [4, 7]     vs [1, 2, 8] -- gain of 0.0062 expectation
-- [4, 8]     vs [1, 2, 9] -- gain of 0.0062 expectation
-- [5, 6]     vs [1, 2, 8] -- gain of 0.0093 expectation
-- [5, 7]     vs [1, 2, 9] -- gain of 0.0201 expectation
-- [5, 7]     vs [1, 3, 8] -- gain of 0.0015 expectation
-- [1, 8, 11] vs [2, 3, 4, 11] -- gain of 0.0003 expectation
-- [4, 7, 12] vs [1, 2, 8, 12] -- gain of 0.0005 expectation
-- [5, 6, 12] vs [1, 2, 8, 12] -- gain of 0.0008 expectation
+| Box State | Roll | Chosen | Not Chosen | Expectation gain |
+|-----------|------|--------|------------|------------------|
+|1,2,4,7,8|11|4,7|1,2,8|0.0062|
+|1,2,4,8,9|12|4,8|1,2,9|0.0062|
+|1,2,5,6,8|11|5,6|1,2,8|0.0093|
+|1,2,5,7,9|12|5,7|1,2,9|0.0201|
+|1,3,5,7,8|12|5,7|1,3,8|0.0015|
+|1,2,3,4,8,11|9|1,8,11|2,3,4,11|0.0003|
+|1,2,4,7,8,12|11|4,7,12|1,2,8,12|0.0005|
+|1,2,5,6,8,12|11|5,6,12|1,2,8,12|0.0008|
+
+If we take difference between the expectation of the best option and the expectation of
+the next best option that removes _more_ numbers, we get an average of 0.0165248 across
+27,542 situations where there is such a next best option.
 
 As you can see, in these exceptional cases, we would be stuck with numbers on the extreme ends
-of the spectrum, and instead we choose to have fewer numbers to close, but which are more likely
-to be rolled.
+of the spectrum, and instead we choose to have fewer numbers to close, but which are more likely to be rolled.
 
 In the other 45,037 situations, we choose to remove the fewest number of numbers (although which set of that number of numbers is not necessarily clear yet). That is to say,
 it is correct to remove the fewest number of numbers in ~99.982% of game states.
